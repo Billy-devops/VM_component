@@ -1,0 +1,32 @@
+name: Terraform Azure Deploy
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'environment/dev/**'
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }} 
+
+      - name: Setup Terraform CLI
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Init
+        working-directory: environment/dev
+        run: terraform init
+
+      - name: Terraform Plan
+        working-directory: environment/dev
+        run: terraform plan
+
